@@ -231,7 +231,7 @@ if __name__ == '__main__':
 
     # train parameters
     parser.add_argument('-bs', '--batch_size', type=int, default=256, help='the size of batch.')
-    parser.add_argument('-ep', '--epochs', type=int, default=20, help='the num of epochs.')
+    parser.add_argument('-ep', '--epochs', type=int, default=50, help='the num of epochs.')
 
     # model parameters
     parser.add_argument('-lr', '--lr', type=float, default=0.001, help='initial learning rate', dest='lr')

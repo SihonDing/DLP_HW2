@@ -6,16 +6,19 @@ class BasicBlock(nn.Module):
         super(BasicBlock, self).__init__()
         self.residual_function = nn.Sequential(
             nn.Conv2d(in_channel, out_channel, kernel_size=3, stride=stride, padding=1, bias=False),
-            nn.BatchNorm2d(out_channel),
+            # nn.BatchNorm2d(out_channel),
+            nn.LocalResponseNorm(size=out_channel, alpha=1, beta=1, k=0),
             nn.ReLU(inplace=True),
             nn.Conv2d(out_channel, out_channel, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(out_channel)
+            # nn.BatchNorm2d(out_channel)
+            nn.LocalResponseNorm(size=out_channel, alpha=1, beta=1, k=0)
         )
         self.shortcut = nn.Sequential()
         if stride != 1 or in_channel != out_channel:
             self.shortcut = nn.Sequential(
                 nn.Conv2d(in_channel, out_channel, kernel_size=1, stride=stride, bias=False),
-                nn.BatchNorm2d(out_channel)
+                # nn.BatchNorm2d(out_channel)
+                nn.LocalResponseNorm(size=out_channel, alpha=1, beta=1, k=0)
             )
 
     def forward(self, x):
@@ -28,20 +31,21 @@ class _resnet18(nn.Module):
     def __init__(self, BasicBlock, num_classes=200):
         super(_resnet18, self).__init__()
         self.in_channel = 64
-        # Input: 3*32*32 Output: 64*32*32
+        # Input: 3*64*64 Output: 64*64*64
         self.conv1 = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.BatchNorm2d(64),
+            # nn.BatchNorm2d(64),
+            nn.LocalResponseNorm(size=64, alpha=1, beta=1, k=0),
             nn.ReLU(),
         )
         self.pool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         self.conv2_x = self._make_layer(BasicBlock, 64, 2, stride=2)     # Output: 64*16*16
-        self.conv3_x = self._make_layer(BasicBlock, 128, 2, stride=2)    # Output: 128*8*8
+        self.conv3_x = self._make_layer(BasicBlock, 128, 2, stride=2)    # Output: 128*16*16
         self.conv4_x = self._make_layer(BasicBlock, 256, 2, stride=2)    # Output: 256*4*4
-        self.conv5_x = self._make_layer(BasicBlock, 512, 2, stride=2)    # Output: 256*2*2
+        self.conv5_x = self._make_layer(BasicBlock, 512, 2, stride=2)    # Output: 512*2*2
         self.avg = nn.AvgPool2d(kernel_size=2)
         self.fc = nn.Linear(512, num_classes)
-        # self.dp = nn.Dropout(0.5)
+        self.dp = nn.Dropout(0.5)
 
     def _make_layer(self, block, channels, num_blocks, stride):
         # strides=[1, 1] or [2, 1]
