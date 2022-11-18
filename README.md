@@ -1,5 +1,5 @@
 # DLP_HW2
-Second programming assignment for deep learning practice：
+<font size=2>Second programming assignment for deep learning practice：
 Read the paper of LeNet、AlexNet、ResNet and compare the differences and connections between them.Comparative tests are carried out on the basis of Resnet
 ------
 ## 1. ResNet
@@ -79,3 +79,4 @@ Forward/backward pass size (MB): 2505.39
 Params size (MB): 43.01
 Estimated Total Size (MB): 2560.40
 ----------------------------------------------------------------
+</font>
